@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lind.Web.MvvmTest", "Lind.Web.MvvmTest\Lind.Web.MvvmTest.csproj", "{35EE30C6-B105-4931-8092-0F2FA12D5D99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lind.WPFTest.Data", "Lind.WPFTest.Data\Lind.WPFTest.Data.csproj", "{42991A35-3AAD-4D1D-ADCB-6899D6E8E93E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D0AB6D95-C0E4-4A06-84C4-769D83B49677}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://lind-i.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Lind.Web.MvvmTest\\Lind.Web.MvvmTest.csproj
+		SccProjectName1 = Lind.Web.MvvmTest
+		SccLocalPath1 = Lind.Web.MvvmTest
+		SccProjectUniqueName2 = Lind.WPFTest.Data\\Lind.WPFTest.Data.csproj
+		SccProjectName2 = Lind.WPFTest.Data
+		SccLocalPath2 = Lind.WPFTest.Data
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35EE30C6-B105-4931-8092-0F2FA12D5D99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35EE30C6-B105-4931-8092-0F2FA12D5D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35EE30C6-B105-4931-8092-0F2FA12D5D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35EE30C6-B105-4931-8092-0F2FA12D5D99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42991A35-3AAD-4D1D-ADCB-6899D6E8E93E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42991A35-3AAD-4D1D-ADCB-6899D6E8E93E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42991A35-3AAD-4D1D-ADCB-6899D6E8E93E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42991A35-3AAD-4D1D-ADCB-6899D6E8E93E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
