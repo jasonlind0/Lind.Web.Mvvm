@@ -69,10 +69,17 @@ var ViewModels;
                 var d = Navigation.defer();
                 if (this.isUnloading())
                     this.unloadPromise.done(function (s) {
-                        _this.onLoading();
-                        _this.loadWorker().done(function (ls) {
+                        _this.loadPromise = _this.loadWorker().done(function (ls) {
                             return _this.onLoaded(ls, d);
                         });
+                        _this.onLoading();
+                    });
+                else if (this.isLoaded() || this.isLoading())
+                    this.unload().done(function () {
+                        _this.loadPromise = _this.loadWorker().done(function (s) {
+                            return _this.onLoaded(s, d);
+                        });
+                        _this.onLoading();
                     });
                 else {
                     this.loadPromise = this.loadWorker().done(function (s) {

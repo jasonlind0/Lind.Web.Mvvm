@@ -54,9 +54,14 @@ module ViewModels.Navigation {
             var d = defer<boolean>();
             if (this.isUnloading())
                 this.unloadPromise.done(s => {
+                    this.loadPromise = this.loadWorker().done(ls => this.onLoaded(ls, d))
                     this.onLoading();
-                    this.loadWorker().done(ls => this.onLoaded(ls, d))
                     });
+            else if (this.isLoaded() || this.isLoading())
+                this.unload().done(() => {
+                    this.loadPromise = this.loadWorker().done(s => this.onLoaded(s, d));
+                    this.onLoading();
+                });
             else {
                 this.loadPromise = this.loadWorker().done(s => this.onLoaded(s, d));
                 this.onLoading();
