@@ -48,16 +48,14 @@ var ViewModels;
                 this.closed = new Lind.Events.TypedEvent();
                 this.navigationItemAdded = new Lind.Events.TypedEvent();
                 this.queue = async.queue(function (s, c) {
-                    _this.queue.pause();
                     if (s)
                         _this.loadWorker().done(function () {
-                            return _this.queue.resume();
+                            return c();
                         });
                     else
                         _this.unloadWorker().done(function () {
-                            return _this.queue.resume();
+                            return c();
                         });
-                    c();
                 }, 1);
                 this.data = ko.observable(Data);
                 this.data.subscribe(function (n) {
@@ -106,7 +104,7 @@ var ViewModels;
                 if (this.isLoaded()) {
                     this.unload();
                     this.load();
-                    d.resolve(true);
+                    d.resolve(false);
                 } else {
                     this.doLoad().done(function (s) {
                         return _this.onLoaded(s, d);

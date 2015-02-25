@@ -50,12 +50,10 @@ module ViewModels.Navigation {
         public closed: Lind.Events.ITypedEvent<NavigationItem> = new Lind.Events.TypedEvent();
         public navigationItemAdded: Lind.Events.ITypedEvent<NavigationItem> = new Lind.Events.TypedEvent();
         private queue: AsyncQueue<boolean> = async.queue((s, c) => {
-            this.queue.pause();
             if (s)
-                this.loadWorker().done(() => this.queue.resume());
+                this.loadWorker().done(() => c());
             else
-                this.unloadWorker().done(() => this.queue.resume());
-            c();
+                this.unloadWorker().done(() => c());
         }, 1);
         load() : Promise<boolean>{
             var d = defer<boolean>();
@@ -79,7 +77,7 @@ module ViewModels.Navigation {
             {
                 this.unload();
                 this.load();
-                d.resolve(true);
+                d.resolve(false);
             }
             else {
                 this.doLoad().done(s => this.onLoaded(s, d));
