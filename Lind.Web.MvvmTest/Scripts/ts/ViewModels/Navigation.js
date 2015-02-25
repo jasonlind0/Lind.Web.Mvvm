@@ -8,6 +8,7 @@ var ViewModels;
 (function (ViewModels) {
     /// <reference path="../../typings/knockout/knockout.d.ts" />
     /// <reference path="../../Promise.ts" />
+    /// <reference path="../../typings/async/async.d.ts" />
     (function (Navigation) {
         Navigation.defer = P.defer;
         Navigation.when = P.when;
@@ -46,6 +47,18 @@ var ViewModels;
                 this.Data = Data;
                 this.closed = new Lind.Events.TypedEvent();
                 this.navigationItemAdded = new Lind.Events.TypedEvent();
+                this.queue = async.queue(function (s, c) {
+                    _this.queue.pause();
+                    if (s)
+                        _this.loadWorker().done(function () {
+                            return _this.queue.resume();
+                        });
+                    else
+                        _this.unloadWorker().done(function () {
+                            return _this.queue.resume();
+                        });
+                    c();
+                }, 1);
                 this.data = ko.observable(Data);
                 this.data.subscribe(function (n) {
                     return Data = n;
@@ -65,60 +78,41 @@ var ViewModels;
                 });
             }
             NavigationItem.prototype.load = function () {
+                var d = Navigation.defer();
+                this.queue.push(true, function () {
+                    return d.resolve(true);
+                });
+                return d.promise();
+            };
+            NavigationItem.prototype.unload = function () {
+                var d = Navigation.defer();
+                this.queue.push(false, function () {
+                    return d.resolve(true);
+                });
+                return d.promise();
+            };
+            NavigationItem.prototype.unloadWorker = function () {
                 var _this = this;
                 var d = Navigation.defer();
-                if (this.isUnloading())
-                    this.unloadPromise.done(function (s) {
-                        _this.loadPromise = _this.loadWorker().done(function (ls) {
-                            return _this.onLoaded(ls, d);
-                        });
-                        _this.onLoading();
-                    });
-                else if (this.isLoaded() || this.isLoading())
-                    this.unload().done(function () {
-                        _this.loadPromise = _this.loadWorker().done(function (s) {
-                            return _this.onLoaded(s, d);
-                        });
-                        _this.onLoading();
-                    });
-                else {
-                    this.loadPromise = this.loadWorker().done(function (s) {
+                this.doUnload().done(function (s) {
+                    return _this.onUnloaded(s, d);
+                });
+                this.onUnloading();
+                return d.promise();
+            };
+            NavigationItem.prototype.loadWorker = function () {
+                var _this = this;
+                var d = Navigation.defer();
+                if (this.isLoaded()) {
+                    this.unload();
+                    this.load();
+                    d.resolve(true);
+                } else {
+                    this.doLoad().done(function (s) {
                         return _this.onLoaded(s, d);
                     });
                     this.onLoading();
                 }
-                return d.promise();
-            };
-            NavigationItem.prototype.unload = function () {
-                var _this = this;
-                var d = Navigation.defer();
-                if (this.isLoading())
-                    this.loadPromise.done(function () {
-                        _this.unloadPromise = _this.unloadWorker().done(function (s) {
-                            return _this.onUnloaded(s, d);
-                        });
-                        _this.onUnloading();
-                    });
-                else {
-                    this.unloadPromise = this.unloadWorker().done(function (s) {
-                        return _this.onUnloaded(s, d);
-                    });
-                    this.onUnloading();
-                }
-                return d.promise();
-            };
-            NavigationItem.prototype.unloadWorker = function () {
-                var d = Navigation.defer();
-                this.doUnload().done(function (s) {
-                    return d.resolve(s);
-                });
-                return d.promise();
-            };
-            NavigationItem.prototype.loadWorker = function () {
-                var d = Navigation.defer();
-                this.doLoad().done(function (s) {
-                    return d.resolve(s);
-                });
                 return d.promise();
             };
             NavigationItem.prototype.onLoaded = function (loadStatus, promise) {

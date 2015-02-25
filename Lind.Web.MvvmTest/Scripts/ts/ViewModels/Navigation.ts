@@ -1,5 +1,6 @@
 ﻿/// <reference path="../../typings/knockout/knockout.d.ts" />
 /// <reference path="../../Promise.ts" />
+/// <reference path="../../typings/async/async.d.ts" />
 module ViewModels.Navigation {
     export var defer = P.defer;
     export var when = P.when;
@@ -48,47 +49,42 @@ module ViewModels.Navigation {
         public isUnloaded: KnockoutComputed<boolean>;
         public closed: Lind.Events.ITypedEvent<NavigationItem> = new Lind.Events.TypedEvent();
         public navigationItemAdded: Lind.Events.ITypedEvent<NavigationItem> = new Lind.Events.TypedEvent();
-        private loadPromise: Promise<boolean>;
-        private unloadPromise: Promise<boolean>;
-        load(): Promise<boolean> {
+        private queue: AsyncQueue<boolean> = async.queue((s, c) => {
+            this.queue.pause();
+            if (s)
+                this.loadWorker().done(() => this.queue.resume());
+            else
+                this.unloadWorker().done(() => this.queue.resume());
+            c();
+        }, 1);
+        load() : Promise<boolean>{
             var d = defer<boolean>();
-            if (this.isUnloading())
-                this.unloadPromise.done(s => {
-                    this.loadPromise = this.loadWorker().done(ls => this.onLoaded(ls, d))
-                    this.onLoading();
-                    });
-            else if (this.isLoaded() || this.isLoading())
-                this.unload().done(() => {
-                    this.loadPromise = this.loadWorker().done(s => this.onLoaded(s, d));
-                    this.onLoading();
-                });
-            else {
-                this.loadPromise = this.loadWorker().done(s => this.onLoaded(s, d));
-                this.onLoading();
-            }
+            this.queue.push(true, () => d.resolve(true));
             return d.promise();
         }
-        unload(): Promise<boolean> {
+        unload() : Promise<boolean>{
             var d = defer<boolean>();
-            if (this.isLoading())
-                this.loadPromise.done(() => {
-                    this.unloadPromise = this.unloadWorker().done(s => this.onUnloaded(s, d));
-                    this.onUnloading();
-                });
-            else {
-                this.unloadPromise = this.unloadWorker().done(s => this.onUnloaded(s, d));
-                this.onUnloading();
-            }
+            this.queue.push(false, () => d.resolve(true));
             return d.promise();
         }
         private unloadWorker(): Promise<boolean> {
             var d = defer<boolean>();
-            this.doUnload().done(s => d.resolve(s));
+            this.doUnload().done(s => this.onUnloaded(s, d));
+            this.onUnloading();
             return d.promise();
         }
         private loadWorker(): Promise<boolean>{
             var d = defer<boolean>();
-            this.doLoad().done(s => d.resolve(s));
+            if (this.isLoaded())
+            {
+                this.unload();
+                this.load();
+                d.resolve(true);
+            }
+            else {
+                this.doLoad().done(s => this.onLoaded(s, d));
+                this.onLoading();
+            }
             return d.promise();
         }
         private onLoaded(loadStatus: boolean, promise: P.Deferred<boolean>) {

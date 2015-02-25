@@ -244,6 +244,7 @@
     <TypeScriptCompile Include="Scripts\ts\Views\Main.ts" />
     <Content Include="Scripts\ts\Views\Main.js" />
     <Content Include="Scripts\typings\async\async.d.ts" />
+    <Content Include="Scripts\typings\async\async.js" />
     <Content Include="Scripts\typings\jquery\jquery.d.ts" />
     <Content Include="Scripts\typings\knockout\knockout.d.ts" />
     <Content Include="Scripts\_references.js" />
