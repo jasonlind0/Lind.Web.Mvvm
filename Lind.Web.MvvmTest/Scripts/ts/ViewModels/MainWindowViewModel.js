@@ -1,11 +1,11 @@
 ﻿var ViewModels;
 (function (ViewModels) {
     /// <reference path="../../typings/knockout/knockout.d.ts" />
+    /// <reference path="../../typings/jquery/jquery.d.ts" />
     (function (MainWindow) {
         var MainWindowViewModel = (function () {
-            function MainWindowViewModel(Container, navigationData) {
+            function MainWindowViewModel(navigationData) {
                 var _this = this;
-                this.Container = Container;
                 this.navigationItems = ko.observableArray();
                 this.selectedNavigationItem = ko.observable();
                 this.selectedNavigationItemType = ko.computed(function () {
@@ -23,9 +23,7 @@
                         n.load();
                 });
                 for (var i = 0; i < navigationData.length; i++) {
-                    var navItem = Container.Resolve(typeof ViewModels.Navigation.NavigationItem, navigationData[i].Name, [new Lind.IoC.ConstructorParameterFactory("data", function () {
-                            return navigationData[i];
-                        })]);
+                    var navItem = ViewModels.Navigation.NavigationItemFactory.Create(navigationData[i]);
                     navItem.closed.add(this.onNavigationItemClosed);
                     navItem.navigationItemAdded.add(this.onNavigationItemAdded);
                     this.navigationItems.push(navItem);

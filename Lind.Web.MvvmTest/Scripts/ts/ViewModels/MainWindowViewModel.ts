@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../typings/knockout/knockout.d.ts" />
+/// <reference path="../../typings/jquery/jquery.d.ts" />
 module ViewModels.MainWindow {
     export class MainWindowViewModel {
         constructor(navigationData: ViewModels.Navigation.INavigationData[]) {

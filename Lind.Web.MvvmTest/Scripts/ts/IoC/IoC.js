@@ -22,7 +22,20 @@
             return DefaultConstructorFactory;
         })();
         IoC.DefaultConstructorFactory = DefaultConstructorFactory;
-
+        var TypedConstructorFactory = (function () {
+            function TypedConstructorFactory(Name, type, container, typeParameterName, resolveOverides) {
+                this.Name = Name;
+                this.type = type;
+                this.container = container;
+                this.typeParameterName = typeParameterName;
+                this.resolveOverides = resolveOverides;
+            }
+            TypedConstructorFactory.prototype.Construct = function () {
+                return this.container.Resolve(this.type, this.typeParameterName, this.resolveOverides);
+            };
+            return TypedConstructorFactory;
+        })();
+        IoC.TypedConstructorFactory = TypedConstructorFactory;
         var Dependency = (function () {
             function Dependency(factory, parameters) {
                 this.factory = factory;

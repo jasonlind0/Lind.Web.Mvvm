@@ -1,5 +1,9 @@
 ﻿module Lind.IoC {
     
+    export interface IContainer {
+        Register<TTo>(typeFrom: string, factory: (arguments?: any[]) => TTo, name?: string, injectionMembers?: IConstructorParameterFactory[]);
+        Resolve<T>(type: string, name?: string, resolveOverrides?: IConstructorParameterFactory[]): T;
+    }
     export interface IConstructorParameterFactory {
         Construct(): any;
         Name: string;
@@ -16,9 +20,12 @@
             return null;
         }
     }
-    export interface IContainer {
-        Register<TTo>(typeFrom : string, factory : (arguments? : any[]) => TTo, name?: string, injectionMembers?: IConstructorParameterFactory[]);
-        Resolve<T>(type: string, name?: string, resolveOverrides?: IConstructorParameterFactory[]): T;
+    export class TypedConstructorFactory implements IConstructorParameterFactory {
+        constructor(public Name: string, private type: string, private container: IContainer, private typeParameterName?: string, private resolveOverides?: IConstructorParameterFactory[]) {
+        }
+        Construct(): any {
+            return this.container.Resolve(this.type, this.typeParameterName, this.resolveOverides);
+        }
     }
     class Dependency {
         private injectionParameters: Lind.Collections.Dictionary<IConstructorParameterFactory>;
