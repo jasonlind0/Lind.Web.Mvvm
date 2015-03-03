@@ -19,12 +19,13 @@ namespace Lind.Web.MvvmTest.Controllers
     public static class RepositoryControllerRegistery<TEntity>
         where TEntity: class
     {
-        public static void Register(IUnityContainer container, RouteCollection routes, string name = null, string path = "api", IFilter controllerFilter = null,
+        public static void Register<TRepositoryController>(IUnityContainer container, RouteCollection routes, string name = null, string path = "api", IFilter controllerFilter = null,
             IFilter getFilter = null, IFilter deleteFilter = null, IFilter putFilter = null, IFilter postFilter = null)
+            where TRepositoryController : IRepositoryController<TEntity>
         {
             if(name == null)
                 name = typeof(TEntity).Name.Pluralize();
-            container.RegisterType<IHttpController, RepositoryController<TEntity>>(name);
+            container.RegisterType<IHttpController, TRepositoryController>(name);
             RepositoryControllerAuthorizations auth = new RepositoryControllerAuthorizations()
             {
                 ControllerFilter = controllerFilter,
@@ -39,6 +40,11 @@ namespace Lind.Web.MvvmTest.Controllers
             routes.MapHttpRoute(string.Format("{0}Delete", name), string.Format("{0}/{1}/Delete/{2}", path, name, "{id}"), new { controller = name, action = "Delete" });
             routes.MapHttpRoute(string.Format("{0}Post", name), string.Format("{0}/{1}/Post", path, name), new { controller = name, action = "Post" });
             routes.MapHttpRoute(string.Format("{0}Put", name), string.Format("{0}/{1}/Put", path, name), new { controller = name, action = "Put" });
+        }
+        public static void Register(IUnityContainer container, RouteCollection routes, string name = null, string path = "api", IFilter controllerFilter = null,
+            IFilter getFilter = null, IFilter deleteFilter = null, IFilter putFilter = null, IFilter postFilter = null)
+        {
+            Register<RepositoryController<TEntity>>(container, routes, name, path, controllerFilter, getFilter, deleteFilter, putFilter, postFilter);
         }
     }
     public interface IRepositoryController : IHttpController
