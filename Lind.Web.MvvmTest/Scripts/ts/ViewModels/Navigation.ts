@@ -31,6 +31,17 @@ module ViewModels.Navigation {
         public displayName: KnockoutObservable<string>;
         public isCloseable: KnockoutObservable<boolean>;
     }
+    export class NavigationItemFactory {
+        private static FactoryMethod: (data: INavigationData) => NavigationItem;
+        public static Create(data: INavigationData): NavigationItem {
+            if (this.FactoryMethod != null)
+                return this.FactoryMethod(data);
+            return null;
+        }
+        public static Initalize(factoryMethod: (data: INavigationData) => NavigationItem) {
+            this.FactoryMethod = factoryMethod;
+        }
+    }
     export class NavigationItem {
         constructor(public Data: INavigationData) {
             this.data = ko.observable(Data);

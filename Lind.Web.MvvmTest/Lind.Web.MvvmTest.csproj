@@ -235,8 +235,12 @@
     <Content Include="Scripts\ts\Northwind\Northwind.js" />
     <TypeScriptCompile Include="Scripts\ts\ViewModels\Navigation.ts" />
     <TypeScriptCompile Include="Scripts\ts\Repository\Repository.ts" />
+    <TypeScriptCompile Include="Scripts\ts\Northwind\RepositoryMocks.ts" />
+    <Content Include="Scripts\ts\Northwind\RepositoryMocks.js" />
     <Content Include="Scripts\ts\Repository\Repository.js" />
     <TypeScriptCompile Include="Scripts\ts\ViewModels\MainWindowViewModel.ts" />
+    <TypeScriptCompile Include="Scripts\ts\Tests\MockMainView.ts" />
+    <Content Include="Scripts\ts\Tests\MockMainView.js" />
     <Content Include="Scripts\ts\ViewModels\MainWindowViewModel.js" />
     <Content Include="Scripts\ts\ViewModels\Navigation.js" />
     <TypeScriptCompile Include="Scripts\ts\ViewModels\RepositoryNavigationItem.ts" />

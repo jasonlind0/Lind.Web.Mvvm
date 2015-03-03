@@ -41,6 +41,20 @@ var ViewModels;
             return NavigationData;
         })();
         Navigation.NavigationData = NavigationData;
+        var NavigationItemFactory = (function () {
+            function NavigationItemFactory() {
+            }
+            NavigationItemFactory.Create = function (data) {
+                if (this.FactoryMethod != null)
+                    return this.FactoryMethod(data);
+                return null;
+            };
+            NavigationItemFactory.Initalize = function (factoryMethod) {
+                this.FactoryMethod = factoryMethod;
+            };
+            return NavigationItemFactory;
+        })();
+        Navigation.NavigationItemFactory = NavigationItemFactory;
         var NavigationItem = (function () {
             function NavigationItem(Data) {
                 var _this = this;

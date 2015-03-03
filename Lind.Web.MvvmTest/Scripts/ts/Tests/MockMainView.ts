@@ -1,8 +1,8 @@
-﻿module Views.Main {
-    /// <reference path="../../typings/knockout/knockout.d.ts" />
-    /// <reference path="../../typings/jquery/jquery.d.ts" />
+﻿/// <reference path="../../typings/knockout/knockout.d.ts" />
+/// <reference path="../../typings/jquery/jquery.d.ts" />
+module Tests {
     export class MainWindowView {
-        constructor(public ServiceLocationBase: string) {
+        constructor() {
             var container = new Lind.IoC.Container();
             container.Register(typeof ViewModels.Navigation.NavigationItem,
                 (arguments) => new ViewModels.Repository.ProductsNavigationItem(<ViewModels.Navigation.INavigationData>arguments[0],
@@ -10,7 +10,7 @@
                 "Products",
                 [
                     new Lind.IoC.DefaultConstructorFactory("data"),
-                    new Lind.IoC.ConstructorParameterFactory("repository", () => new Northwind.Repository.Repository<Northwind.IProduct>(this.ServiceLocationBase + "Products/"))
+                    new Lind.IoC.ConstructorParameterFactory("repository", () => new Northwind.Repository.Mock.MockRepository<Northwind.IProduct>("products"))
                 ]);
             container.Register(typeof ViewModels.Navigation.NavigationItem,
                 (arguments) => new ViewModels.Repository.SuppliersNavigationItem(<ViewModels.Navigation.INavigationData>arguments[0],
@@ -18,18 +18,21 @@
                 "Suppliers",
                 [
                     new Lind.IoC.DefaultConstructorFactory("data"),
-                    new Lind.IoC.ConstructorParameterFactory("repository", () => new Northwind.Repository.Repository<Northwind.ISupplier>(this.ServiceLocationBase + "Suppliers/"))
+                    new Lind.IoC.ConstructorParameterFactory("repository", () => new Northwind.Repository.Mock.MockRepository<Northwind.ISupplier>("suppliers"))
                 ]);
             ViewModels.Navigation.NavigationItemFactory.Initalize(data => container.Resolve<ViewModels.Navigation.NavigationItem>(typeof ViewModels.Navigation.NavigationItem, data.Name,
                 [new Lind.IoC.ConstructorParameterFactory("data", () => data)]));
             this.ViewModel = new ViewModels.MainWindow.MainWindowViewModel([this.createNavigationData("Products"), this.createNavigationData("Suppliers")]);
             ko.applyBindings(this.ViewModel);
         }
-        private createNavigationData(name: string, displayName?: string) : ViewModels.Navigation.INavigationData {
+        private createNavigationData(name: string, displayName?: string): ViewModels.Navigation.INavigationData {
             if (displayName == null)
                 displayName = name;
-            return new ViewModels.Navigation.NavigationData(name, displayName, false); 
+            return new ViewModels.Navigation.NavigationData(name, displayName, false);
         }
         public ViewModel: ViewModels.MainWindow.MainWindowViewModel;
     }
-}
+    $(() => {
+        new MainWindowView();
+    });
+} 

@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../typings/knockout/knockout.d.ts" />
 module ViewModels.MainWindow {
     export class MainWindowViewModel {
-        constructor(private Container: Lind.IoC.IContainer, navigationData: ViewModels.Navigation.INavigationData[]) {
+        constructor(navigationData: ViewModels.Navigation.INavigationData[]) {
             this.navigationItems = ko.observableArray<ViewModels.Navigation.NavigationItem>();
             this.selectedNavigationItem = ko.observable<ViewModels.Navigation.NavigationItem>();
             this.selectedNavigationItemType = ko.computed(() => {
@@ -19,8 +19,7 @@ module ViewModels.MainWindow {
                     n.load();
             });
             for (var i: number = 0; i < navigationData.length; i++) {
-                var navItem = Container.Resolve<ViewModels.Navigation.NavigationItem>(typeof ViewModels.Navigation.NavigationItem, navigationData[i].Name,
-                    [new Lind.IoC.ConstructorParameterFactory("data", () => navigationData[i])]);
+                var navItem = ViewModels.Navigation.NavigationItemFactory.Create(navigationData[i]);
                 navItem.closed.add(this.onNavigationItemClosed);
                 navItem.navigationItemAdded.add(this.onNavigationItemAdded);
                 this.navigationItems.push(navItem);
