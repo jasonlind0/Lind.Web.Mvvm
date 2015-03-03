@@ -9,7 +9,7 @@ using Microsoft.Practices.Unity;
 
 namespace Lind.Web.MvvmTest
 {
-    public class UnityFilterProvider : ActionDescriptorFilterProvider, IFilterProvider
+    public class UnityFilterProvider : ActionDescriptorFilterProvider, IFilterProvider, IDisposable
     {
         private IUnityContainer Container { get; set; }
         public UnityFilterProvider(IUnityContainer container)
@@ -40,6 +40,11 @@ namespace Lind.Web.MvvmTest
                 return filterInfos;
             }
             return filters;
+        }
+
+        public void Dispose()
+        {
+            this.Container.Dispose();
         }
     }
 

@@ -54,7 +54,7 @@ namespace Lind.Web.MvvmTest
         }
     }
 
-    public class UnityControllerSelector : DefaultHttpControllerSelector
+    public class UnityControllerSelector : DefaultHttpControllerSelector, IDisposable
     {
         private IUnityContainer Container { get; set; }
         private HttpConfiguration Configuration { get; set; }
@@ -71,6 +71,11 @@ namespace Lind.Web.MvvmTest
             if(controller != null)
                 return new HttpControllerDescriptor(this.Configuration, controllerName, controller.GetType());
             return base.SelectController(request);
+        }
+
+        public void Dispose()
+        {
+            this.Container.Dispose();
         }
     }
 }
