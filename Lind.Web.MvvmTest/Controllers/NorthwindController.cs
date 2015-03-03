@@ -12,17 +12,28 @@ using Inflector;
 using System.Reflection;
 using Microsoft.Practices.Unity;
 using System.Web.Http.Controllers;
+using System.Web.Http.Filters;
 
 namespace Lind.Web.MvvmTest.Controllers
 {
     public static class RepositoryControllerRegistery<TEntity>
         where TEntity: class
     {
-        public static void Register(IUnityContainer container, RouteCollection routes, string name = null, string path = "api")
+        public static void Register(IUnityContainer container, RouteCollection routes, string name = null, string path = "api", IFilter controllerFilter = null,
+            IFilter getFilter = null, IFilter deleteFilter = null, IFilter putFilter = null, IFilter postFilter = null)
         {
             if(name == null)
                 name = typeof(TEntity).Name.Pluralize();
             container.RegisterType<IHttpController, RepositoryController<TEntity>>(name);
+            RepositoryControllerAuthorizations auth = new RepositoryControllerAuthorizations()
+            {
+                ControllerFilter = controllerFilter,
+                GetFilter = getFilter,
+                DeleteFilter = deleteFilter,
+                PutFilter = putFilter,
+                PostFilter = postFilter
+            };
+            container.RegisterInstance<RepositoryControllerAuthorizations>(name, auth);
             routes.MapHttpRoute(string.Format("{0}GetAll", name), string.Format("{0}/{1}/GetAll", path, name), new { controller = name, action = "GetAll" });
             routes.MapHttpRoute(string.Format("{0}Get", name), string.Format("{0}/{1}/Get/{2}", path, name, "{id}"), new { controller = name, action = "Get" });
             routes.MapHttpRoute(string.Format("{0}Delete", name), string.Format("{0}/{1}/Delete/{2}", path, name, "{id}"), new { controller = name, action = "Delete" });

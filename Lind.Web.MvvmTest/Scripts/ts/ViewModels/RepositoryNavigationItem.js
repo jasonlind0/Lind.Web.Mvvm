@@ -24,6 +24,8 @@ var ViewModels;
                         }
                     }
                     return vms;
+                }, function () {
+                    return null;
                 });
             };
             RepositoryNavigationItem.prototype.createViewModel = function (entity) {

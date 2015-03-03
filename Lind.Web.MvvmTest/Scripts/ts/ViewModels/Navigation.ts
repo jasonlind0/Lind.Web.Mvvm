@@ -59,9 +59,9 @@ module ViewModels.Navigation {
         public navigationItemAdded: Lind.Events.ITypedEvent<NavigationItem> = new Lind.Events.TypedEvent();
         private queue: AsyncQueue<boolean> = async.queue((s, c) => {
             if (s)
-                this.loadWorker().done(() => c());
+                this.loadWorker().then(() => c(), () => c());
             else
-                this.unloadWorker().done(() => c());
+                this.unloadWorker().then(() => c(), () => c());
         }, 1);
         load() : JQueryPromise<boolean>{
             var d = $.Deferred<boolean>();
@@ -75,7 +75,7 @@ module ViewModels.Navigation {
         }
         private unloadWorker(): JQueryPromise<boolean> {
             var d = $.Deferred<boolean>();
-            this.doUnload().done(s => this.onUnloaded(s, d));
+            this.doUnload().then(s => this.onUnloaded(s, d), () => this.onLoaded(false, d));
             this.onUnloading();
             return d.promise();
         }
@@ -88,7 +88,7 @@ module ViewModels.Navigation {
                 d.resolve(false);
             }
             else {
-                this.doLoad().done(s => this.onLoaded(s, d));
+                this.doLoad().then(s => this.onLoaded(s, d), () => this.onLoaded(false, d));
                 this.onLoading();
             }
             return d.promise();
@@ -139,10 +139,10 @@ module ViewModels.Navigation {
                         this.items.push(i[k]);
                     }
                 }
-            }).then(() => true);
+            }, () => { return; }).then(() => true, () => false);
         }
         doUnload(): JQueryPromise<boolean> {
-            return super.doUnload().then(() => this.items.removeAll()).then(() => true);
+            return super.doUnload().then(() => this.items.removeAll(), () => this.items.removeAll()).then(() => true, () => false);
         }
         getItems(): JQueryPromise<T[]> {
             var d = $.Deferred<T[]>();

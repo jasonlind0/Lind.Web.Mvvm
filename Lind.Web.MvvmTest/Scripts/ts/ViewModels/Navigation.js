@@ -60,11 +60,15 @@ var ViewModels;
                 this.navigationItemAdded = new Lind.Events.TypedEvent();
                 this.queue = async.queue(function (s, c) {
                     if (s)
-                        _this.loadWorker().done(function () {
+                        _this.loadWorker().then(function () {
+                            return c();
+                        }, function () {
                             return c();
                         });
                     else
-                        _this.unloadWorker().done(function () {
+                        _this.unloadWorker().then(function () {
+                            return c();
+                        }, function () {
                             return c();
                         });
                 }, 1);
@@ -103,8 +107,10 @@ var ViewModels;
             NavigationItem.prototype.unloadWorker = function () {
                 var _this = this;
                 var d = $.Deferred();
-                this.doUnload().done(function (s) {
+                this.doUnload().then(function (s) {
                     return _this.onUnloaded(s, d);
+                }, function () {
+                    return _this.onLoaded(false, d);
                 });
                 this.onUnloading();
                 return d.promise();
@@ -117,8 +123,10 @@ var ViewModels;
                     this.load();
                     d.resolve(false);
                 } else {
-                    this.doLoad().done(function (s) {
+                    this.doLoad().then(function (s) {
                         return _this.onLoaded(s, d);
+                    }, function () {
+                        return _this.onLoaded(false, d);
                     });
                     this.onLoading();
                 }
@@ -173,16 +181,24 @@ var ViewModels;
                             _this.items.push(i[k]);
                         }
                     }
+                }, function () {
+                    return;
                 }).then(function () {
                     return true;
+                }, function () {
+                    return false;
                 });
             };
             NavigationItemCollection.prototype.doUnload = function () {
                 var _this = this;
                 return _super.prototype.doUnload.call(this).then(function () {
                     return _this.items.removeAll();
+                }, function () {
+                    return _this.items.removeAll();
                 }).then(function () {
                     return true;
+                }, function () {
+                    return false;
                 });
             };
             NavigationItemCollection.prototype.getItems = function () {

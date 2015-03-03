@@ -13,7 +13,7 @@ module ViewModels.Repository {
                     }
                 }
                 return vms;
-            });
+            }, () => null);
         }
         createViewModel(entity : TEntity): TViewModel {
             return null;
