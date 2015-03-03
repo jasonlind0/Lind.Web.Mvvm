@@ -1,10 +1,7 @@
 ﻿/// <reference path="../../typings/knockout/knockout.d.ts" />
-/// <reference path="../../Promise.ts" />
 /// <reference path="../../typings/async/async.d.ts" />
+/// <reference path="../../typings/jquery/jquery.d.ts" />
 module ViewModels.Navigation {
-    export var defer = P.defer;
-    export var when = P.when;
-    export interface Promise<Value> extends P.Promise<Value> { }
     export interface INavigationData {
         Name: string;
         DisplayName: string;
@@ -66,24 +63,24 @@ module ViewModels.Navigation {
             else
                 this.unloadWorker().done(() => c());
         }, 1);
-        load() : Promise<boolean>{
-            var d = defer<boolean>();
+        load() : JQueryPromise<boolean>{
+            var d = $.Deferred<boolean>();
             this.queue.push(true, () => d.resolve(true));
             return d.promise();
         }
-        unload() : Promise<boolean>{
-            var d = defer<boolean>();
+        unload() : JQueryPromise<boolean>{
+            var d = $.Deferred<boolean>();
             this.queue.push(false, () => d.resolve(true));
             return d.promise();
         }
-        private unloadWorker(): Promise<boolean> {
-            var d = defer<boolean>();
+        private unloadWorker(): JQueryPromise<boolean> {
+            var d = $.Deferred<boolean>();
             this.doUnload().done(s => this.onUnloaded(s, d));
             this.onUnloading();
             return d.promise();
         }
-        private loadWorker(): Promise<boolean>{
-            var d = defer<boolean>();
+        private loadWorker(): JQueryPromise<boolean>{
+            var d = $.Deferred<boolean>();
             if (this.isLoaded())
             {
                 this.unload();
@@ -96,11 +93,11 @@ module ViewModels.Navigation {
             }
             return d.promise();
         }
-        private onLoaded(loadStatus: boolean, promise: P.Deferred<boolean>) {
+        private onLoaded(loadStatus: boolean, promise: JQueryDeferred<boolean>) {
             this.status(NavigationItemStatus.Loaded);
             promise.resolve(loadStatus);
         }
-        private onUnloaded(unloadStatus: boolean, promise: P.Deferred<boolean>) {
+        private onUnloaded(unloadStatus: boolean, promise: JQueryDeferred<boolean>) {
             this.status(NavigationItemStatus.Unloaded);
             promise.resolve(unloadStatus);
         }
@@ -110,13 +107,13 @@ module ViewModels.Navigation {
         private onUnloading() {
             this.status(NavigationItemStatus.Unloading);
         }
-        doLoad(): Promise<boolean> {
-            var d = defer<boolean>();
+        doLoad(): JQueryPromise<boolean> {
+            var d = $.Deferred<boolean>();
             d.resolve(true);
             return d.promise();
         }
-        doUnload(): Promise<boolean> {
-            var d = defer<boolean>();
+        doUnload(): JQueryPromise<boolean> {
+            var d = $.Deferred<boolean>();
             d.resolve(true);
             return d.promise();
         }
@@ -135,30 +132,20 @@ module ViewModels.Navigation {
             this.items = ko.observableArray<T>();
         }
         public items: KnockoutObservableArray<T>;
-        doLoad(): Promise<boolean> {
-            var d = defer<boolean>();
-            super.doLoad().done(() => {
-                this.getItems().done(i => {
-                    if (i != null) {
-                        for (var k: number = 0; k < i.length; k++) {
-                            this.items.push(i[k]);
-                        }
+        doLoad(): JQueryPromise<boolean> {
+            return this.getItems().then(i => {
+                if (i != null) {
+                    for (var k: number = 0; k < i.length; k++) {
+                        this.items.push(i[k]);
                     }
-                    d.resolve(true);
-                });
-            });
-            return d.promise(); 
+                }
+            }).then(() => true);
         }
-        doUnload(): Promise<boolean> {
-            var d = defer<boolean>();
-            super.doUnload().done(() => {
-                this.items.removeAll();
-                d.resolve(true);
-            });
-            return d.promise();
+        doUnload(): JQueryPromise<boolean> {
+            return super.doUnload().then(() => this.items.removeAll()).then(() => true);
         }
-        getItems(): Promise<T[]> {
-            var d = defer<T[]>();
+        getItems(): JQueryPromise<T[]> {
+            var d = $.Deferred<T[]>();
             d.resolve(null);
             return d.promise();
         }

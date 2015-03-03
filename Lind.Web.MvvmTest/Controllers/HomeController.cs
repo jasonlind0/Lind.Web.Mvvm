@@ -15,6 +15,9 @@ namespace Lind.Web.MvvmTest.Controllers
         {
             return View();
         }
-
+        public ActionResult IndexTest()
+        {
+            return View();
+        }
     }
 }

@@ -7,12 +7,9 @@
 var ViewModels;
 (function (ViewModels) {
     /// <reference path="../../typings/knockout/knockout.d.ts" />
-    /// <reference path="../../Promise.ts" />
     /// <reference path="../../typings/async/async.d.ts" />
+    /// <reference path="../../typings/jquery/jquery.d.ts" />
     (function (Navigation) {
-        Navigation.defer = P.defer;
-        Navigation.when = P.when;
-
         (function (NavigationItemStatus) {
             NavigationItemStatus[NavigationItemStatus["Loading"] = 0] = "Loading";
             NavigationItemStatus[NavigationItemStatus["Loaded"] = 1] = "Loaded";
@@ -90,14 +87,14 @@ var ViewModels;
                 });
             }
             NavigationItem.prototype.load = function () {
-                var d = Navigation.defer();
+                var d = $.Deferred();
                 this.queue.push(true, function () {
                     return d.resolve(true);
                 });
                 return d.promise();
             };
             NavigationItem.prototype.unload = function () {
-                var d = Navigation.defer();
+                var d = $.Deferred();
                 this.queue.push(false, function () {
                     return d.resolve(true);
                 });
@@ -105,7 +102,7 @@ var ViewModels;
             };
             NavigationItem.prototype.unloadWorker = function () {
                 var _this = this;
-                var d = Navigation.defer();
+                var d = $.Deferred();
                 this.doUnload().done(function (s) {
                     return _this.onUnloaded(s, d);
                 });
@@ -114,7 +111,7 @@ var ViewModels;
             };
             NavigationItem.prototype.loadWorker = function () {
                 var _this = this;
-                var d = Navigation.defer();
+                var d = $.Deferred();
                 if (this.isLoaded()) {
                     this.unload();
                     this.load();
@@ -142,12 +139,12 @@ var ViewModels;
                 this.status(2 /* Unloading */);
             };
             NavigationItem.prototype.doLoad = function () {
-                var d = Navigation.defer();
+                var d = $.Deferred();
                 d.resolve(true);
                 return d.promise();
             };
             NavigationItem.prototype.doUnload = function () {
-                var d = Navigation.defer();
+                var d = $.Deferred();
                 d.resolve(true);
                 return d.promise();
             };
@@ -170,30 +167,26 @@ var ViewModels;
             }
             NavigationItemCollection.prototype.doLoad = function () {
                 var _this = this;
-                var d = Navigation.defer();
-                _super.prototype.doLoad.call(this).done(function () {
-                    _this.getItems().done(function (i) {
-                        if (i != null) {
-                            for (var k = 0; k < i.length; k++) {
-                                _this.items.push(i[k]);
-                            }
+                return this.getItems().then(function (i) {
+                    if (i != null) {
+                        for (var k = 0; k < i.length; k++) {
+                            _this.items.push(i[k]);
                         }
-                        d.resolve(true);
-                    });
+                    }
+                }).then(function () {
+                    return true;
                 });
-                return d.promise();
             };
             NavigationItemCollection.prototype.doUnload = function () {
                 var _this = this;
-                var d = Navigation.defer();
-                _super.prototype.doUnload.call(this).done(function () {
-                    _this.items.removeAll();
-                    d.resolve(true);
+                return _super.prototype.doUnload.call(this).then(function () {
+                    return _this.items.removeAll();
+                }).then(function () {
+                    return true;
                 });
-                return d.promise();
             };
             NavigationItemCollection.prototype.getItems = function () {
-                var d = Navigation.defer();
+                var d = $.Deferred();
                 d.resolve(null);
                 return d.promise();
             };

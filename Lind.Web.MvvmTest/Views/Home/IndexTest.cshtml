@@ -1,0 +1,87 @@
+﻿@{
+    ViewBag.Title = "Northwind Application";
+}
+@section scripts{
+    <script type="text/javascript" src="~/Scripts/ts/ViewModels/Navigation.js"></script>
+    <script type="text/javascript" src="~/Scripts/ts/ViewModels/RepositoryNavigationItem.js"></script>
+    <script type="text/javascript" src="~/Scripts/ts/ViewModels/MainWindowViewModel.js"></script>
+    <script type="text/javascript" src="~/Scripts/ts/Northwind/RepositoryMocks.js"></script>
+    <script type="text/javascript" src="~/Scripts/ts/Tests/MockMainView.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var view = new Tests.MainWindowView();
+        });
+    </script>
+}
+<h2>Northwind Application</h2>
+<div id="mainPage">
+    <div id="rightNav" style="float:left">
+        <ul data-bind="foreach: navigationItems">
+            <li>
+                <div data-bind="style:{ background: isLoading() == true ? 'yellow' : (isLoaded() == true ? 'green' : (isUnloading() == true ? 'gray' : (isUnloaded() == true ? 'white' : 'red')))}">
+                    <span><a data-bind="text:data().DisplayName, click: $parent.selectedNavigationItem"></a><button data-bind="visible:data().IsCloseable == true, click: close" >x</button></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div id="leftContent" data-bind="template: { name: selectedNavigationItemType(), data: selectedNavigationItem }"></div>
+    <script type="text/html" id="Products">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Supplier</th>
+                    <th>Category</th>
+                    <th>Unit Price</th>
+                    <th>Units in Stock</th>
+                    <th>Discontinued</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: items">
+                <tr>
+                    <td><span data-bind="text:productName" /></td>
+                    <td><span data-bind="text: supplier().companyName" /></td>
+                    <td><span data-bind="text: category().categoryName" /></td>
+                    <td><span data-bind="text: unitPrice" /></td>
+                    <td><span data-bind="text: unitsInStock" /></td>
+                    <td><input type="checkbox" data-bind="checked: discontinued" disabled="disabled" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </script>
+    <script type="text/html" id="Suppliers">
+        <table>
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Contact</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Region</th>
+                    <th>Postal Code</th>
+                    <th>Country</th>
+                    <th>Phone</th>
+                    <th>Fax</th>
+                    <th>Home Page</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: items">
+                <tr>
+                    <td><span data-bind="text: companyName" /></td>
+                    <td><span data-bind="text: contactName" /></td>
+                    <td><span data-bind="text: address" /></td>
+                    <td><span data-bind="text: city" /></td>
+                    <td><span data-bind="text: region" /></td>
+                    <td><span data-bind="text: postalCode" /></td>
+                    <td><span data-bind="text: country" /></td>
+                    <td><span data-bind="text: phone" /></td>
+                    <td><span data-bind="text: fax" /></td>
+                    <td><a data-bind="attr: { href: homePage }, visible: hasHomePage()">(...)</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </script>
+    <script type="text/html" id="Loading">
+        <h2>Loading</h2>
+    </script>
+</div>

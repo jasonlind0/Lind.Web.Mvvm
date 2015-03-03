@@ -7,11 +7,7 @@
 var ViewModels;
 (function (ViewModels) {
     /// <reference path="../../typings/knockout/knockout.d.ts" />
-    /// <reference path="../../Promise.ts" />
     (function (_Repository) {
-        _Repository.defer = P.defer;
-        _Repository.when = P.when;
-
         var RepositoryNavigationItem = (function (_super) {
             __extends(RepositoryNavigationItem, _super);
             function RepositoryNavigationItem(data, Repository) {
@@ -20,17 +16,15 @@ var ViewModels;
             }
             RepositoryNavigationItem.prototype.getItems = function () {
                 var _this = this;
-                var d = _Repository.defer();
-                this.Repository.GetAll().done(function (i) {
+                return this.Repository.GetAll().then(function (i) {
                     var vms = [];
                     if (i != null) {
                         for (var k = 0; k < i.length; k++) {
                             vms.push(_this.createViewModel(i[k]));
                         }
                     }
-                    d.resolve(vms);
+                    return vms;
                 });
-                return d.promise();
             };
             RepositoryNavigationItem.prototype.createViewModel = function (entity) {
                 return null;

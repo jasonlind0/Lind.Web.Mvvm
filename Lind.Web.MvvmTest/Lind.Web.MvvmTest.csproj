@@ -207,7 +207,6 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
-    <Content Include="Scripts\Promise.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -222,10 +221,10 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Views\Home\IndexTest.cshtml" />
     <TypeScriptCompile Include="Scripts\ts\Northwind\Northwind.ts">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="Scripts\Promise.ts" />
     <TypeScriptCompile Include="Scripts\ts\Events\Events.ts" />
     <TypeScriptCompile Include="Scripts\ts\Dictionary\Dictionary.ts" />
     <Content Include="Scripts\ts\Dictionary\Dictionary.js" />
