@@ -8,7 +8,7 @@
                 }
                 MockRepository.prototype.Delete = function (id) {
                     var d = $.Deferred();
-                    d.resolve(null);
+                    d.resolve();
                     return d.promise();
                 };
                 MockRepository.prototype.GetAll = function () {
@@ -30,7 +30,7 @@
                 };
                 MockRepository.prototype.Update = function (entity) {
                     var d = $.Deferred();
-                    d.resolve(false);
+                    d.resolve();
                     return d.promise();
                 };
                 return MockRepository;

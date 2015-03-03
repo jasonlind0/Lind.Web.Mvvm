@@ -1,9 +1,9 @@
 ﻿module Northwind.Repository.Mock {
     export class MockRepository<TEntity> implements IRepositoryGeneric<TEntity>{
         constructor(public ServiceLocation: string) { }
-        Delete(id: number): JQueryPromise<boolean> {
-            var d = $.Deferred<boolean>();
-            d.resolve(null);
+        Delete(id: number): JQueryPromise<void> {
+            var d = $.Deferred<void>();
+            d.resolve();
             return d.promise();
         }
         GetAll(): JQueryPromise<TEntity[]> {
@@ -23,9 +23,9 @@
             d.resolve(null);
             return d.promise();
         }
-        Update(entity: TEntity): JQueryPromise<boolean> {
-            var d = $.Deferred<boolean>();
-            d.resolve(false);
+        Update(entity: TEntity): JQueryPromise<void> {
+            var d = $.Deferred<void>();
+            d.resolve();
             return d.promise();
 
         }

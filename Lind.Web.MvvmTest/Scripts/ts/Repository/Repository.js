@@ -8,85 +8,40 @@
                 this.ServiceLocation = ServiceLocation;
             }
             Repository.prototype.Delete = function (id) {
-                var d = $.Deferred();
-                $.ajax({
+                return $.ajax({
                     type: "DELETE",
-                    async: true,
-                    url: this.ServiceLocation + "Delete/" + id,
-                    success: function () {
-                        return d.resolve(true);
-                    },
-                    error: function () {
-                        return d.resolve(false);
-                    }
+                    url: this.ServiceLocation + "Delete/" + id + "?time=" + new Date().getTime()
                 });
-                return d.promise();
             };
             Repository.prototype.GetAll = function () {
-                var d = $.Deferred();
-                $.ajax({
+                return $.ajax({
                     type: "GET",
-                    async: true,
-                    url: this.ServiceLocation + "GetAll",
-                    success: function (data) {
-                        return d.resolve(data);
-                    },
-                    error: function (err) {
-                        return d.resolve(null);
-                    }
+                    url: this.ServiceLocation + "GetAll" + "?time=" + new Date().getTime()
                 });
-                return d.promise();
             };
             Repository.prototype.Get = function (id) {
-                var d = $.Deferred();
-                $.ajax({
+                return $.ajax({
                     type: "GET",
-                    async: true,
-                    url: this.ServiceLocation + "Get/" + id,
-                    success: function (data) {
-                        return d.resolve(data);
-                    },
-                    error: function () {
-                        return d.resolve(null);
-                    }
+                    url: this.ServiceLocation + "Get/" + id + "?time=" + new Date().getTime()
                 });
-                return d.promise();
             };
             Repository.prototype.Add = function (entity) {
-                var d = $.Deferred();
-                $.ajax({
+                return $.ajax({
                     type: "POST",
-                    async: true,
-                    url: this.ServiceLocation + "Post",
+                    url: this.ServiceLocation + "Post" + "?time=" + new Date().getTime(),
                     data: JSON.stringify(entity),
                     contentType: "application/json; charset=utf-8",
-                    dataType: 'json',
-                    success: function (data) {
-                        return d.resolve(data);
-                    },
-                    error: function () {
-                        return d.resolve(null);
-                    }
+                    dataType: 'json'
                 });
-                return d.promise();
             };
             Repository.prototype.Update = function (entity) {
-                var d = $.Deferred();
-                $.ajax({
+                return $.ajax({
                     type: "PUT",
-                    async: true,
-                    url: this.ServiceLocation + "Put",
+                    url: this.ServiceLocation + "Put" + "?time=" + new Date().getTime(),
                     data: JSON.stringify(entity),
                     contentType: "application/json; charset=utf-8",
-                    dataType: 'json',
-                    success: function () {
-                        return d.resolve(true);
-                    },
-                    error: function () {
-                        return d.resolve(false);
-                    }
+                    dataType: 'json'
                 });
-                return d.promise();
             };
             return Repository;
         })();

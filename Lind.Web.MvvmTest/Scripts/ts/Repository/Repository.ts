@@ -2,78 +2,52 @@
 /// <reference path="../../typings/jquery/jquery.d.ts" />
 module Northwind.Repository {
     export interface IRepository {
-        Delete(id: number): JQueryPromise<boolean>;
+        Delete(id: number): JQueryPromise<void>;
         ServiceLocation: string;
     }
     export interface IRepositoryGeneric<TEntity> extends IRepository {
         GetAll(): JQueryPromise<TEntity[]>;
         Get(id: number): JQueryPromise<TEntity>;
         Add(entity: TEntity): JQueryPromise<TEntity>;
-        Update(entity: TEntity): JQueryPromise<boolean>;
+        Update(entity: TEntity): JQueryPromise<void>;
     }
     export class Repository<TEntity> implements IRepositoryGeneric<TEntity>{
         constructor(public ServiceLocation: string) { }
-        Delete(id: number): JQueryPromise<boolean> {
-            var d = $.Deferred<boolean>();
-            $.ajax({
+        Delete(id: number): JQueryPromise<void> {
+            return <JQueryPromise<void>>$.ajax({
                 type: "DELETE",
-                async: true,
-                url: this.ServiceLocation + "Delete/" + id,
-                success: () => d.resolve(true),
-                error: () => d.resolve(false)
+                url: this.ServiceLocation + "Delete/" + id +"?time="+new Date().getTime()
             });
-            return d.promise();
         }
         GetAll(): JQueryPromise<TEntity[]> {
-            var d = $.Deferred<TEntity[]>();
-            $.ajax({
+            return <JQueryPromise<TEntity[]>>$.ajax({
                 type: "GET",
-                async: true,
-                url: this.ServiceLocation + "GetAll",
-                success: data => d.resolve(<TEntity[]>data),
-                error: err => d.resolve(null)
+                url: this.ServiceLocation + "GetAll" + "?time=" + new Date().getTime(),
             });
-            return d.promise();
         }
         Get(id: number): JQueryPromise<TEntity> {
-            var d = $.Deferred<TEntity>();
-            $.ajax({
+            return <JQueryPromise<TEntity>>$.ajax({
                 type: "GET",
-                async: true,
-                url: this.ServiceLocation + "Get/" + id,
-                success: data => d.resolve(<TEntity>data),
-                error: () => d.resolve(null)
+                url: this.ServiceLocation + "Get/" + id + "?time=" + new Date().getTime(),
             });
-            return d.promise();
         }
         Add(entity: TEntity): JQueryPromise<TEntity> {
-            var d = $.Deferred<TEntity>();
-            $.ajax({
+            return <JQueryPromise<TEntity>>$.ajax({
                 type: "POST",
-                async: true,
-                url: this.ServiceLocation + "Post",
+                url: this.ServiceLocation + "Post" + "?time=" + new Date().getTime(),
                 data: JSON.stringify(entity),
                 contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                success: data => d.resolve(<TEntity>data),
-                error: () => d.resolve(null)
+                dataType: 'json'
             });
-            return d.promise();
         }
-        Update(entity: TEntity): JQueryPromise<boolean> {
-            var d = $.Deferred<boolean>();
-            $.ajax({
+        Update(entity: TEntity): JQueryPromise<void> {
+            return <JQueryPromise<void>>$.ajax({
                 type: "PUT",
-                async: true,
-                url: this.ServiceLocation + "Put",
+                url: this.ServiceLocation + "Put" + "?time=" + new Date().getTime(),
                 data: JSON.stringify(entity),
                 contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                success: () => d.resolve(true),
-                error: () => d.resolve(false)
+                dataType: 'json'
             });
-            return d.promise();
-            
         }
     }
 }
