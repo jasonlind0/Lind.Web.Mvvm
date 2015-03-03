@@ -42,15 +42,20 @@ namespace Lind.Web.MvvmTest.Controllers
         Task<HttpResponseMessage> Put(TEntity entity);
         Task<HttpResponseMessage> Post(TEntity entity);
     }
-    public class RepositoryController<TEntity> : ApiController, IRepositoryController<TEntity>
+    public class RepositoryController<TEntity> : RepositoryController<TEntity, IRepository<TEntity>>
         where TEntity : class
     {
-        protected IRepository<TEntity> Repository { get; private set; }
-        public RepositoryController(IRepository<TEntity> repository)
+        public RepositoryController(IRepository<TEntity> repository) : base(repository) { }
+    }
+    public class RepositoryController<TEntity, TRepository> : ApiController, IRepositoryController<TEntity>
+        where TEntity : class
+        where TRepository : IRepository<TEntity>
+    {
+        protected TRepository Repository { get; private set; }
+        public RepositoryController(TRepository repository)
         {
             this.Repository = repository;
         }
-        //public NorthwindController() : this(new NorthwindRepository<TEntity>()) { }
 
         [HttpGet]
         public async virtual Task<HttpResponseMessage> GetAll()
@@ -59,7 +64,7 @@ namespace Lind.Web.MvvmTest.Controllers
             {
                 CancellationTokenSource cancel = new CancellationTokenSource();
                 var entities = await this.Repository.GetEntitiesAsync(cancel.Token);
-                return Request.CreateResponse<TEntity[]>(entities.ToArray());
+                return Request.CreateResponse<IEnumerable<TEntity>>(entities);
             }
             catch (Exception ex)
             {
